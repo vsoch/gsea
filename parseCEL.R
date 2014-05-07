@@ -12,16 +12,19 @@ library('affy')
 args <- commandArgs(TRUE)
 celdir = args[1]
 outdir = args[2]
-rundir = args[3]
+topdir = args[3]
 olddir = args[4]
+
+# Create output directory, if it doesn't exist
+dir.create(outdir, showWarnings = FALSE)
 
 cat("\n",celdir,":cels\n")
 cat(outdir,":output\n")
-cat(rundir,":topdir\n")
+cat(topdir,":topdir\n")
 cat(olddir,":oldgctdir\n\n")
 
 # This is a log file, used to keep track of parameters to run GSEA
-fileConn<-file(paste(rundir,"/inputParam.txt",sep=""))
+fileConn<-file(paste(topdir,"/inputParam.txt",sep=""))
 writeLines("NORMDATA\tCHIP\tCLASS", fileConn)
 close(fileConn)
 
@@ -54,8 +57,8 @@ for (f in folders){
       raw = read.csv(paste(olddir,"/",o,sep=""),skip=2,sep="\t")
       subid = colnames(raw)[3:ncol(raw)]
       filtered = exprSet.nologs[,subid]
-      chipfile = paste(rundir,"/chip/",f,"_series_matrix.chip",sep="")
-      classfile = paste(rundir,"/cls/",gsub(".gct",".cls",o),sep="")
+      chipfile = paste(topdir,"/chip/",f,"_series_matrix.chip",sep="")
+      classfile = paste(topdir,"/cls/",gsub(".gct",".cls",o),sep="")
       
       # Add probe names, description(with na)
       DESCRIPTION = rep('na',dim(filtered)[1])
@@ -68,8 +71,8 @@ for (f in folders){
       write.table(filtered,file=outfile,append=TRUE,col.names=TRUE,row.names=FALSE,quote=FALSE,sep="\t")   
     
       # Lastly, we want to document the input files for each, so we can run programatically
-      cat(paste(outfile,chipfile,classfile,sep="\t"),file=paste(rundir,"/inputParam.txt",sep=""),append=TRUE,sep="\t")
-      cat("\n",file=paste(rundir,"/inputParam.txt",sep=""),append=TRUE)
+      cat(paste(outfile,chipfile,classfile,sep="\t"),file=paste(topdir,"/inputParam.txt",sep=""),append=TRUE,sep="\t")
+      cat("\n",file=paste(topdir,"/inputParam.txt",sep=""),append=TRUE)
     } 
   }
   

@@ -7,7 +7,7 @@ jobname = "ASD.CEL.PARSE"
 celdir = '/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/ASD/cel'
 outdir = '/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/ASD/norm'
 olddir = '/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/ASD/OLD/input'
-rundir = '/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/ASD'
+topdir = '/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/ASD'
 
 jobby = paste(jobname,".job",sep="")
 sink(paste(".jobs/",jobby,sep=""))
@@ -17,7 +17,7 @@ cat("#SBATCH --output=.out/",jobby,".out\n",sep="")
 cat("#SBATCH --error=.out/",jobby,".err\n",sep="")  
 cat("#SBATCH --time=2-00:00\n",sep="")
 cat("#SBATCH --mem=8000\n",sep="")
-cat("Rscript /scratch/PI/dpwall/SCRIPT/R/gsea/parseCEL.R",celdir,outdir,olddir,rundir,"\n")
+cat("Rscript /scratch/PI/dpwall/SCRIPT/R/gsea/parseCEL.R",celdir,outdir,olddir,topdir,"\n")
 sink()
 
 # SUBMIT R SCRIPT TO RUN ON CLUSTER  

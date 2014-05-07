@@ -1,8 +1,8 @@
 #!/bin/python
 
 # This script will read through output files under a specified directory,
-# parse the output files to read in P values and correct for multiple 
-# comparisons, and output a results report with significant results
+# parse the output files to read in P values and output a results report with 
+# raw results
 
 import os
 import re
@@ -56,8 +56,7 @@ outfile.writelines(matrix)
 outfile.close()
 
 
-# Here is to look through corrected p values and find significant results
-
+# Now use findSigResults.R to threshold!
 
 
 

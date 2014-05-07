@@ -1,4 +1,6 @@
-# Read in data file 
+# Should be run after findSigOutput.py to threshold results
+
+# Read in data file (output from findSigOutput.py)
 data = read.csv('/home/vanessa/Documents/Work/GENE_EXPRESSION/nextbio/BPD/gsea_report/unthresh_matrix_all4559.txt',sep="\t",head=TRUE)
 data = data[2:dim(data)[1],]
 
