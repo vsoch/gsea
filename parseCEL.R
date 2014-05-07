@@ -18,7 +18,7 @@ olddir = args[4]
 # Create output directory, if it doesn't exist
 dir.create(outdir, showWarnings = FALSE)
 
-cat("\n",celdir,":cels\n")
+cat(celdir,":cels\n")
 cat(outdir,":output\n")
 cat(topdir,":topdir\n")
 cat(olddir,":oldgctdir\n\n")
@@ -30,6 +30,7 @@ close(fileConn)
 
 # Get list of folders in ASD/cel directory
 folders = list.files(celdir,pattern="GSE*")
+cat(folders)
 
 # For each folder, format files
 for (f in folders){

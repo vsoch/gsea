@@ -1,7 +1,7 @@
 # This is the cel file directory
 # run_parseCEL.R
 # This script will, for a folder of .CEL files, read in the files, sort 
-# for interactive node: srun -n 12 -N 1 --mem=64000 --pty bash --time=24:00:00
+# for interactive node: srun -n 13 -N 1 --mem=64000 --pty bash --time=24:00:00
 
 jobname = "ASD.CEL.PARSE"
 celdir = '/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/ASD/cel'
