@@ -23,6 +23,26 @@ Create a gene database from lists saved in Rda files.  This is customized to wor
 ### combineGeneSetsforPCA.R
 Creates a compiled data frame for a specific subset of terms for performing PCA / visualization.  Again is customized for Vanessa's brain terms and would need customization for other use.
 
+## Run GSEA
+
+### gsea.R 
+is the main script to run gsea, which reads in input parameters from inputParams.txt. It is run by:
+
+### run_gsea.R
+The submission script for gsea.R
+USAGE of gsea.R is: RSCRIPT gsea.R gseadir inputprefix inputdata inputchip inputcls inputdb outdir
+
+and so this script takes as input:
+- gseadir: the full path to "GSEA-P-R.R" on Sherlock
+- inputdata: read in from NORM column in inputParams.txt
+- inputchip: read in from CHIP column in inputParams.txt
+- inputcls: read in from CLASS column in inputParams.txt
+- inputdb: a list specified at the top of the file, full paths to 1+ gene set databases
+- outdir: the full path of top level folder to create output subdirectories
+
+You do not need to specify
+- inputprefix: Is extracted from the input data path
+
 ### TO DO
 
 - parse other input types
