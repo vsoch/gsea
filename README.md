@@ -7,7 +7,8 @@ These scripts will be use to run gsea on Sherlock using R.  (currently in develo
 NOTE: This script is intended to fix normalization for OLD analysis that have already been prepared (eg, the .gct files and .cls files and .chip files created), but not properly normalized! Raw data will be read from CEL files, background correction (PM and MM correction), and then quantile normalization.  Original probe names are in rows, and samples in columns.  The sample names should be the GSE IDs (extracted from the names of the cel files), and probe names will be the original probe names, and we run gsea with a "chip" file that has the gene--> probe lookup.  Again - this is ONLY for runs for which a .gct, .cls, and .chip already exist - a new script will be made to accomplish this task for completely new raw data. 
 Is run by:
 
-### run_parseCEL.R," in which you should specify the following input variables:
+### run_parseCEL.R
+in which you should specify the following input variables:
  - jobname: will be the name of the job submission
  - celdir: is the directory with input .CEL files
  - outdir: is the "norm" directory that normalized data, formatted for gsea, will go
