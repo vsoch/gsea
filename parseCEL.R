@@ -30,7 +30,6 @@ close(fileConn)
 
 # Get list of folders in ASD/cel directory
 folders = list.files(celdir,pattern="GSE*")
-cat(folders)
 
 # For each folder, format files
 for (f in folders){
