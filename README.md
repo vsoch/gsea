@@ -13,7 +13,7 @@ in which you should specify the following input variables:
  - celdir: is the directory with input .CEL files
  - outdir: is the "norm" directory that normalized data, formatted for gsea, will go
  - olddir: directory with OLD formatted data (.gct) files are.  
- - rundir: the directory to output the inputParams.txt file, should also contain the "chip" and "cls" and "norm" folder.
+ - rundir: the directory to output the inputParams.txt file, should also contain the "chip" and "cls" and "norm" folders.
 
 The script will create a job file in the .jobs folder in the PWD, and both error and terminal output will go to .out.  The script will also submit the job to run on the sherlock cluster, with a max time of 2 days and 8GB memory.
 
@@ -25,35 +25,32 @@ Creates a compiled data frame for a specific subset of terms for performing PCA 
 
 ## Run GSEA
 
-### gsea.R 
-is the main script to run gsea, which reads in input parameters from inputParams.txt. It is run by:
-
 ### run_gsea.R
-The submission script for gsea.R
-USAGE of gsea.R is: RSCRIPT gsea.R gseadir inputprefix inputdata inputchip inputcls inputdb outdir
+This script will create .job files in the /.jobs folder and submit them to run gsea with the gsea java .jar file on sherlock.
 
-and so this script takes as input:
-- gseadir: the full path to "GSEA-P-R.R" on Sherlock
+This script takes as input:
+- gseadir: the full path to the java .jar gsea file
 - inputdata: read in from NORM column in inputParams.txt
 - inputchip: read in from CHIP column in inputParams.txt
 - inputcls: read in from CLASS column in inputParams.txt
 - inputdb: a list specified at the top of the file, full paths to 1+ gene set databases
-- outdir: the full path of top level folder to create output subdirectories
+- outdir: the full path of top level folder (where gsea will create subdirectory)
 
 You do not need to specify
-- inputprefix: Is extracted from the input data path
+- inputprefix: Is extracted from the input data path - this is the name of the subdirectory that will be created.
 
 ### TO DO
 
 - parse other input types
-- submission script to run gsea from inputParams.txt
 
 ## Output Parsing
 
 ### findSigOutput.py
+NOTE: This is for GSEA R package only, not to be used with .java result
 Should be run first after all gsea runs are complete.  A Python script that reads through files under a specific directory, parses the gsea R package output files, and reads in P values.  Does not correct for multiple comparisons, but just outputs all results into a table.
 
 ### findSigResults.R
+NOTE: This is for GSEA R package only, not to be used with .java result
 Should be run second, after findSigOutput.py, to threshold results and report significant under some p value.
 
 ### GOenrichment.R
