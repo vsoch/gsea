@@ -47,6 +47,16 @@ for (f in folders){
   samp = gsub(".CEL.gz","",samp)
   colnames(exprSet.nologs) = samp
   
+  # Read in the chip file
+  chipfile = paste(topdir,"/chip/",f,"_series_matrix.chip",sep="")
+  chipdata = read.csv(chipfile,head=TRUE,sep="\t")
+  # Get rid of empty genes
+  chipdata = chipdata[-which(chipdata[,2]==""),]
+  # Write to file
+  chipfile = gsub("[.]chip","_filt.chip",chipfile)
+  colnames(chipdata) = c("Probe Set ID","Gene Symbol","Gene Title")
+  write.table(chipdata,file=chipfile,sep="\t",col.names=TRUE,row.names=FALSE,quote=FALSE)
+  
   # For each of the old analyses, get GSMIDs from the files
   oldies = list.files(olddir,pattern=paste(f,"*",sep=""))
   for (o in oldies) {
@@ -57,7 +67,6 @@ for (f in folders){
       raw = read.csv(paste(olddir,"/",o,sep=""),skip=2,sep="\t")
       subid = colnames(raw)[3:ncol(raw)]
       filtered = exprSet.nologs[,subid]
-      chipfile = paste(topdir,"/chip/",f,"_series_matrix.chip",sep="")
       classfile = paste(topdir,"/cls/",gsub(".gct",".cls",o),sep="")
       
       # Add probe names, description(with na)
@@ -67,7 +76,10 @@ for (f in folders){
       
       # Now print new file
       outfile = paste(outdir,"/",gsub("series_matrix_","",o),sep="")
-      cat(firsttwo,sep="\n",file=outfile)
+      dimprint = paste(dim(filtered)[1],dim(filtered)[2]-2,sep="\t")
+      fileConn = file(outfile)
+      writeLines(c("#1.2",dimprint),sep="\n",fileConn)
+      close(fileConn)  
       write.table(filtered,file=outfile,append=TRUE,col.names=TRUE,row.names=FALSE,quote=FALSE,sep="\t")   
     
       # Lastly, we want to document the input files for each, so we can run programatically

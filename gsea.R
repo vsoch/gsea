@@ -23,6 +23,7 @@ GSEA(
      # Input/Output Files :-------------------------------------------
      input.ds =  inputdata,               # Input gene expression Affy dataset file in RES or GCT format
      input.cls = inputcls,               # Input class vector (phenotype) file in CLS format
+     gene.ann = inputchip,
      gs.db =     inputdb,           # Gene set database in GMT format
      output.directory = outdir,            # Directory where to store output and results (default: "")
      #  Program parameters :----------------------------------------------------------------------------------------------------------------------------
