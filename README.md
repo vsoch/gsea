@@ -1,5 +1,5 @@
 # Gene Set Enrichment Analysis - R
-These scripts will be use to run gsea on Sherlock using R.  (currently in development!)
+These scripts will be use to run gsea ,jar on Sherlock using R.  (currently in development!)
 
 ## Input Preparation
 
