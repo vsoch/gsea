@@ -40,6 +40,6 @@ for (i in 1:dim(inputfile)[1]){
     sink()
     
     # SUBMIT R SCRIPT TO RUN ON CLUSTER  
-    #system(paste("sbatch",paste(".jobs/",jobby,sep="")))
+    system(paste("sbatch",paste(".jobs/",jobby,sep="")))
   }  
 }

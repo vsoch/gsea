@@ -4,10 +4,10 @@
 # for interactive node: srun -n 13 -N 1 --mem=64000 --pty bash --time=24:00:00
 
 jobname = "ASD.CEL.PARSE"
-celdir = '/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/ASD/cel'
-outdir = '/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/ASD/norm'
-olddir = '/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/ASD/OLD/input'
-topdir = '/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/ASD'
+celdir = '/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/ALZ/cel'
+outdir = '/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/ALZ/norm'
+olddir = '/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/ALZ/OLD/input'
+topdir = '/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/ALZ'
 
 jobby = paste(jobname,".job",sep="")
 sink(paste(".jobs/",jobby,sep=""))

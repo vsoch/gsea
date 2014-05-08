@@ -39,11 +39,12 @@ This script takes as input:
 You do not need to specify
 - inputprefix: Is extracted from the input data path - this is the name of the subdirectory that will be created.
 
-### TO DO
+### gseaJar Output parsing
 
-- parse other input types
+NOT YET WRITTEN
+- parse other input types 
 
-## Output Parsing
+## gseaR Output Parsing
 
 ### findSigOutput.py
 NOTE: This is for GSEA R package only, not to be used with .java result
@@ -53,16 +54,18 @@ Should be run first after all gsea runs are complete.  A Python script that read
 NOTE: This is for GSEA R package only, not to be used with .java result
 Should be run second, after findSigOutput.py, to threshold results and report significant under some p value.
 
+## GeneOntology Functions
+
 ### GOenrichment.R
 Looks at network of gene functions for a gene term subset
 
 ### amiGOImages.R
 Produces RamiGO images for a list of GO terms.  Currently does not function because the RamiGO package needs to be updated for changes to Gene Ontology.
 
+## GeneConversion, Analysis, and Visualization
+
 ### tanimotoAssess.R
 Calculates tanimoto scores for gene sets in a database to assess overlap.  Tanimoto is set intersection / union
-
-## Gene Conversion
 
 ### geneToKegg.R
 Has code to convert from KO identifiers to swiss, or swiss to KO.

@@ -44,11 +44,12 @@ for (f in folders){
   
   # Get the sample names
   samp <- sampleNames(affy.data)
+  samp = gsub(".cel.gz","",samp)
   samp = gsub(".CEL.gz","",samp)
   colnames(exprSet.nologs) = samp
   
   # Read in the chip file
-  chipfile = paste(topdir,"/chip/",f,"_series_matrix.chip",sep="")
+  chipfile = paste(topdir,"/chip/",f,".chip",sep="")
   chipdata = read.csv(chipfile,head=TRUE,sep="\t")
   # Get rid of empty genes
   chipdata = chipdata[-which(chipdata[,2]==""),]
@@ -63,7 +64,7 @@ for (f in folders){
     if (substring(o,nchar(o)-3,nchar(o)) == ".gct"){
       # Read in the data file
       # Get first two rows
-      firsttwo = readLines(paste(olddir,"/",o,sep=""),n=2)
+      #firsttwo = readLines(paste(olddir,"/",o,sep=""),n=2)
       raw = read.csv(paste(olddir,"/",o,sep=""),skip=2,sep="\t")
       subid = colnames(raw)[3:ncol(raw)]
       filtered = exprSet.nologs[,subid]
