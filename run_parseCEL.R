@@ -3,11 +3,11 @@
 # This script will, for a folder of .CEL files, read in the files, sort 
 # for interactive node: srun -n 13 -N 1 --mem=64000 --pty bash --time=24:00:00
 
-jobname = "ASD.CEL.PARSE"
-celdir = '/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/ALZ/cel'
-outdir = '/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/ALZ/norm'
-olddir = '/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/ALZ/OLD/input'
-topdir = '/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/ALZ'
+jobname = "CEL.PARSE"
+celdir = '/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/BPD/cel'
+outdir = '/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/BPD/norm'
+olddir = '/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/BPD/OLD/input'
+topdir = '/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/BPD'
 
 jobby = paste(jobname,".job",sep="")
 sink(paste(".jobs/",jobby,sep=""))

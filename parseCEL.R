@@ -9,6 +9,9 @@ library('affy')
 
 # VSochat April 2014
 
+# SZO GSE25673 is NA, GSE38485 is bxg
+# BPD is ready
+# SZO, ALZ are done for cel
 args <- commandArgs(TRUE)
 celdir = args[1]
 outdir = args[2]
@@ -41,6 +44,10 @@ for (f in folders){
   # Summarize and normalize with MAS5
   eset.mas5 = mas5(affy.data)
   exprSet.nologs = exprs(eset.mas5)
+  # Another option
+  #affy.data <- read.celfiles(files)
+  #exprSet.nologs = rma(affy.data)
+  #expr = exprs(exprSet.nologs)
   
   # Get the sample names
   samp <- sampleNames(affy.data)
@@ -52,7 +59,7 @@ for (f in folders){
   chipfile = paste(topdir,"/chip/",f,".chip",sep="")
   chipdata = read.csv(chipfile,head=TRUE,sep="\t")
   # Get rid of empty genes
-  chipdata = chipdata[-which(chipdata[,2]==""),]
+  chipdata = chipdata[!is.na(chipdata[,2]),]
   # Write to file
   chipfile = gsub("[.]chip","_filt.chip",chipfile)
   colnames(chipdata) = c("Probe Set ID","Gene Symbol","Gene Title")
