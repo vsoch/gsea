@@ -60,6 +60,7 @@ for (f in folders){
   chipdata = read.csv(chipfile,head=TRUE,sep="\t")
   # Get rid of empty genes
   chipdata = chipdata[!is.na(chipdata[,2]),]
+  chipdata = chipdata[-which(chipdata[,2]==""),]
   # Write to file
   chipfile = gsub("[.]chip","_filt.chip",chipfile)
   colnames(chipdata) = c("Probe Set ID","Gene Symbol","Gene Title")

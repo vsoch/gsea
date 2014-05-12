@@ -3,9 +3,9 @@
 # USAGE RSCRIPT gsea.R gseadir inputprefix inputdata inputchip inputcls inputdb outdir
 
 gseadir = "/share/PI/dpwall/SOFTWARE/GSEA-P-R/gsea2-2.0.14.jar"                  # Path to main GSEA program
-inputfile = "/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/ALZ/inputParam.txt"    # Path to input parameter file
+inputfile = "/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/PTSD/inputParam.txt"    # Path to input parameter file
 inputdb = c("/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/GENE_DATABASE/brainTerms.gmt","/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/GENE_DATABASE/ASD.gmt")
-outdirtop = "/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/ALZ/output"             # Top level output directory - subdirectories will be made inside
+outdirtop = "/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/PTSD/output"             # Top level output directory - subdirectories will be made inside
 setwd('/scratch/PI/dpwall/SCRIPT/R/gsea')
 
 # Read in input parameter file - create job script and submit for each entry
