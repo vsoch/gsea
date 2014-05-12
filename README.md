@@ -39,10 +39,6 @@ This script takes as input:
 You do not need to specify
 - inputprefix: Is extracted from the input data path - this is the name of the subdirectory that will be created.
 
-### gseaJar Output parsing
-
-NOT YET WRITTEN
-- parse other input types 
 
 ## gseaR Output Parsing
 
@@ -51,8 +47,11 @@ NOTE: This is for GSEA R package only, not to be used with .java result
 Should be run first after all gsea runs are complete.  A Python script that reads through files under a specific directory, parses the gsea R package output files, and reads in P values.  Does not correct for multiple comparisons, but just outputs all results into a table.
 
 ### findSigResults.R
-NOTE: This is for GSEA R package only, not to be used with .java result
-Should be run second, after findSigOutput.py, to threshold results and report significant under some p value.
+Specify a disorder specific folder at the top (eg, "ASD"), and this script will look in each analysis folder in the "output" directory, parse the gsea_report_*.xls files to get FDR.q.values and gene sets, and output a table to report/[disorder].txt
+
+### getNES.R
+This script will read in the output from findSigResults.R, filter at at a user specified threshold, and extract running enrichment scores for each gene, along with the other metrics in the gene subset output file.  The script will write this table to report/[disorder]_gephiLookup.txt, to be used as a lookup table for creating gephi networks.
+
 
 ## GeneOntology Functions
 
@@ -69,4 +68,3 @@ Calculates tanimoto scores for gene sets in a database to assess overlap.  Tanim
 
 ### geneToKegg.R
 Has code to convert from KO identifiers to swiss, or swiss to KO.
- 
