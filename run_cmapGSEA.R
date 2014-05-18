@@ -1,5 +1,8 @@
 # cmapGSEA will run gsea with the brainterms set for all sets of medications in
-# the connectivity map.
+# the connectivity map.  The top section runs "cmapGSEA.R" for each unique drug in the
+# connectivity Map database, which prepares the input data for GSEA.  The bottom half of
+# the script runs the GSEA using the gsea .jar file=, also by way of submitting jobs
+# to the Sherlock cluster.
 
 # VSochat May 2014
 require(gdata)
