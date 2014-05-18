@@ -40,6 +40,12 @@ You do not need to specify
 - inputprefix: Is extracted from the input data path - this is the name of the subdirectory that will be created.
 
 
+### cmapGSEA.R
+Reads in cmap instances, normalizes, and outputs .gct data table for use with GASEA.  Is run by:
+
+### run_cmapGSEA.R
+Prepares paths, etc. for running cmapGSEA.R based on the connectivity map .xls lof drugs, vehicles (controls), and perturbed cells, and also prepares .cls files (top half of script).  The second half of the script runs GSEA using a specified gsea jar file for the input .gct matrices that are produced by the top half of the script.  For both, the runs are submit to run on the Sherlock cluster.
+
 ## gseaR Output Parsing
 
 ### findSigOutput.py
@@ -62,6 +68,9 @@ Looks at network of gene functions for a gene term subset
 Produces RamiGO images for a list of GO terms.  Currently does not function because the RamiGO package needs to be updated for changes to Gene Ontology.
 
 ## GeneConversion, Analysis, and Visualization
+
+### geoToChip.R
+A little batch script for formatting array lookup tables (from GEO) into a chip file, for use with GSEA.
 
 ### tanimotoAssess.R
 Calculates tanimoto scores for gene sets in a database to assess overlap.  Tanimoto is set intersection / union
