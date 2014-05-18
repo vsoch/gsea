@@ -1,5 +1,10 @@
-# cmapPrep.R Will read in CMAP instances, normalize, and output table for gsea
+# cmapGSEA.R Will read in CMAP instances, normalize, and output table for gsea, intended to be run on the Sherlocj cluster
+# by run_cmapGSEA.R.  The input data are compressed .CEL instance files, and a lookup table is used to determine perturbation and
+# vehicle (control) files to look for over expression of a particular gene set (with GSEA).
 
+# May 2014 Vanessa Sochat
+# Wall Lab
+ 
 library('oligo')
 library('affy')
 library('R.utils')
