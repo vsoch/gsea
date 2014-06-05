@@ -35,7 +35,7 @@ for (r in 1:length(reports)[1]) {
       listfile = cbind(rep(folder,dim(listfile)[1]),rep(geneset$NAME.1,dim(listfile)[1]),rep(geneset$SIZE,dim(listfile)[1]),rep(geneset$NES,dim(listfile)[1]),rep(geneset$FDR.q.val,dim(listfile)[1]),listfile[,c(2,5,6,7,8)])
     }else {
       listfile = cbind(rep(folder,dim(listfile)[1]),rep(geneset$NAME.1,dim(listfile)[1]),rep(geneset$SIZE,dim(listfile)[1]),rep(geneset$NES,dim(listfile)[1]),rep(geneset$FDR.q.val,dim(listfile)[1]),listfile[,c(2,6,7,8,9)])
-    }
+    }
     output = rbind(output,listfile)
   }  
 }
