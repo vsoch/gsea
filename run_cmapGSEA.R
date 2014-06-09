@@ -19,10 +19,11 @@ setwd('/scratch/PI/dpwall/SCRIPT/R/gsea')
 gseadir = "/share/PI/dpwall/SOFTWARE/GSEA-P-R/gsea2-2.0.14.jar"                  # Path to main GSEA program
 inputdb = "/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/GENE_DATABASE/brainTerms.gmt"
 
+
 # Output directory will be here
-outdir = paste(cmap,"/gsea",sep="")
-datadir = paste(cmap,"/input",sep="")
-clsdir = paste(cmap,"/cls",sep="")
+outdir = paste(cmap,"/gseaRMA",sep="")
+datadir = paste(cmap,"/inputRMA",sep="")
+clsdir = paste(cmap,"/clsRMA",sep="")
 dir.create(outdir, showWarnings = FALSE)
 dir.create(datadir, showWarnings = FALSE)
 dir.create(clsdir, showWarnings = FALSE)
@@ -40,8 +41,7 @@ for (d in drugs){
   # Find the unique chips
   counts = table(drug$array3)
   chips = names(counts[which(counts != 0)])
-  chips = gsub("-","",chips)
-
+  
   for (c in chips){
     tmp = drug[drug$array3==c,]
     # These are the drug exposed cell lines
@@ -104,15 +104,16 @@ for (d in drugs){
     name = as.character(d)
     name = str_replace_all(name,"[[:punct:]]","")
     name = gsub(" ","",name)
+    chip = gsub("-","",c)
     
     # Create class file
-    classfile = paste(clsdir,"/",name,"_",c,".cls",sep="")
+    classfile = paste(clsdir,"/",name,"_",chip,".cls",sep="")
     cat(nump + numc,"2 1\n",file=classfile)
     cat("# DRUG CON\n",file=classfile,append=TRUE)
     cat(rep("1",nump),rep("2",numc),"\n",file=classfile,append=TRUE)
     
     # Create job file and submit
-    if (!file.exists(paste(datadir,"/",name,"_",c,".gct",sep=""))) {
+    if (!file.exists(paste(datadir,"/",name,"_",chip,".gct",sep=""))) {
       jobby = paste(substr(name,1,3),c,"pre.job",sep="")
       sink(file=paste(".jobs/",jobby,sep=""))
       cat("#!/bin/bash\n")
@@ -121,7 +122,7 @@ for (d in drugs){
       cat("#SBATCH --error=.out/",jobby,".err\n",sep="")  
       cat("#SBATCH --time=2-00:00\n",sep="")
       cat("#SBATCH --mem=8000\n",sep="")
-      cat("Rscript /scratch/PI/dpwall/SCRIPT/R/gsea/cmapPrep.R",name,is,datadir,c)  
+      cat("Rscript /scratch/PI/dpwall/SCRIPT/R/gsea/cmapGSEA.R",name,is,datadir,chip)  
       sink()
       system(paste("sbatch",paste(".jobs/",jobby,sep="")))
     }
@@ -148,7 +149,7 @@ for (d in drugs){
   cat("#SBATCH --error=.out/",jobby,".err\n",sep="")  
   cat("#SBATCH --time=2-00:00\n",sep="")
   cat("#SBATCH --mem=8000\n",sep="")
-  cat("java -cp",gseadir,"xtools.gsea.Gsea -res",input,"-cls",as.character(cls),"-gmx",inputdb,"-chip",as.character(chip),"-collapse true -mode Max_probe -norm meandiv -nperm 1000 -permute genes -rnd_type no_balance -scoring_scheme weighted -rpt_label",gsub(".gct","",d),"-metric Signal2Noise -sort real -order descending -include_only_symbols true -make_sets true -median false -num 100 -plot_top_x 20 -rnd_seed timestamp -save_rnd_lists false -set_max 500 -set_min 15 -zip_report false -out",outdir,"-gui false\n")
+  cat("java -cp",gseadir,"xtools.gsea.Gsea -res",input,"-cls",as.character(cls),"-gmx",inputdb,"-chip",as.character(chip),"-collapse true -mode Max_probe -norm None -nperm 1000 -permute genes -rnd_type no_balance -scoring_scheme weighted -rpt_label",gsub(".gct","",d),"-metric Signal2Noise -sort real -order descending -include_only_symbols true -make_sets true -median false -num 100 -plot_top_x 20 -rnd_seed timestamp -save_rnd_lists false -set_max 500 -set_min 15 -zip_report false -out",outdir,"-gui false\n")
   sink()
   
   system(paste("sbatch",paste(".jobs/",jobby,sep="")))

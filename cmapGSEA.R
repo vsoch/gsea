@@ -36,13 +36,13 @@ for (c in celfiles){
 # Summarize and normalize with quantile normalize
 affy.data = ReadAffy(filenames = files)
 # Summarize and normalize with MAS5
-eset.mas5 = mas5(affy.data)
+eset.mas5 = rma(affy.data)
 exprset.nologs = as.data.frame(exprs(eset.mas5))
 
 # Save the probes to file - will need to look up
 # and make chip file for each
 probes = rownames(exprset.nologs)
-write.table(probes,file=paste("/scratch/PI/dpwall/DATA/DRUG/CONNECTIVITY_MAP/probes/probes",chip,".dat",sep=""),row.names=FALSE,col.names=FALSE,sep="\n",quote=FALSE)
+#write.table(probes,file=paste("/scratch/PI/dpwall/DATA/DRUG/CONNECTIVITY_MAP/probes/probes",chip,".dat",sep=""),row.names=FALSE,col.names=FALSE,sep="\n",quote=FALSE)
 
 # Write data to file (do we need a class file?)
 #classfile = paste(topdir,"/cls/",gsub(".gct",".cls",o),sep="")
