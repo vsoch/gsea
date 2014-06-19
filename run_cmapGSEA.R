@@ -140,17 +140,19 @@ for (d in drugs){
   chip = paste(topdir,"chip/",chip,".chip",sep="")
   input = paste(topdir,"input/",name,sep="")
   cls = paste(topdir,"cls/",gsub(".gct",".cls",name),sep="")
-  
-  jobby = paste(d,"_gsea.job",sep="")
-  sink(file=paste(".jobs/",jobby,sep=""))
-  cat("#!/bin/bash\n")
-  cat("#SBATCH --job-name=",jobby,"\n",sep="")  
-  cat("#SBATCH --output=.out/",jobby,".out\n",sep="")  
-  cat("#SBATCH --error=.out/",jobby,".err\n",sep="")  
-  cat("#SBATCH --time=2-00:00\n",sep="")
-  cat("#SBATCH --mem=8000\n",sep="")
-  cat("java -cp",gseadir,"xtools.gsea.Gsea -res",input,"-cls",as.character(cls),"-gmx",inputdb,"-chip",as.character(chip),"-collapse true -mode Max_probe -norm None -nperm 1000 -permute genes -rnd_type no_balance -scoring_scheme weighted -rpt_label",gsub(".gct","",d),"-metric Signal2Noise -sort real -order descending -include_only_symbols true -make_sets true -median false -num 100 -plot_top_x 20 -rnd_seed timestamp -save_rnd_lists false -set_max 500 -set_min 15 -zip_report false -out",outdir,"-gui false\n")
-  sink()
-  
-  system(paste("sbatch",paste(".jobs/",jobby,sep="")))
+  tmp = read.csv(cls,skip=1)
+  tmp = table(strsplit(as.character(tmp[,1])," ")[[1]])
+  if (all(as.numeric(tmp) >= 3)) {
+    jobby = paste(d,"_gsea.job",sep="")
+    sink(file=paste(".jobs/",jobby,sep=""))
+    cat("#!/bin/bash\n")
+    cat("#SBATCH --job-name=",jobby,"\n",sep="")  
+    cat("#SBATCH --output=.out/",jobby,".out\n",sep="")  
+    cat("#SBATCH --error=.out/",jobby,".err\n",sep="")  
+    cat("#SBATCH --time=2-00:00\n",sep="")
+    cat("#SBATCH --mem=8000\n",sep="")
+    cat("java -cp",gseadir,"xtools.gsea.Gsea -res",input,"-cls",as.character(cls),"-gmx",inputdb,"-chip",as.character(chip),"-collapse true -mode Max_probe -norm None -nperm 1000 -permute genes -rnd_type no_balance -scoring_scheme weighted -rpt_label",gsub(".gct","",d),"-metric Signal2Noise -sort real -order descending -include_only_symbols true -make_sets true -median false -num 100 -plot_top_x 525 -rnd_seed timestamp -save_rnd_lists false -set_max 500 -set_min 15 -zip_report false -out",outdir,"-gui false\n")
+    sink() 
+    system(paste("sbatch",paste(".jobs/",jobby,sep="")))
+  }
 }

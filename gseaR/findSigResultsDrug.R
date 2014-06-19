@@ -1,11 +1,11 @@
 # Get list of files in the output directory
-outdir = "/scratch/PI/dpwall/DATA/DRUG/CONNECTIVITY_MAP/gsea"
+outdir = "/scratch/PI/dpwall/DATA/DRUG/CONNECTIVITY_MAP/gseaRMA"
 folders = list.files(outdir)
-folders = folders[-which(folders == "ERROR")]
-folders = folders[-which(folders=="nocodazole_HGU133A.Gsea.1400444722210")]
+#folders = folders[-which(folders == "ERROR")]
+folders = folders[-which(folders=="nocodazole_HGU133A.Gsea.1402258840744")]
 
 # Threshold results at FDR q value:
-threshold = .25
+threshold = .05
 # This is the report directory to create and write results to
 writedir = "/scratch/PI/dpwall/DATA/DRUG/CONNECTIVITY_MAP/report/" 
 
@@ -24,32 +24,80 @@ colnames(reportFinal)[1] = "NAME"
 
 # Save to report folder
 dir.create(writedir, showWarnings = FALSE)
-save(reportFinal,file=paste(writedir,"DRUGS_GSEA_FDRpt05.Rda",sep=""))
-write.table(reportFinal,file=paste(writedir,"DRUGS_GSEA_FDRpt05.txt",sep=""),sep="\t",row.names=FALSE)
+save(reportFinal,file=paste(writedir,"DRUGS_GSEA_FDRpt05_RMA_Filter.Rda",sep=""))
+write.table(reportFinal,file=paste(writedir,"DRUGS_GSEA_FDRpt05_RMA_Filter.txt",sep=""),sep="\t",row.names=FALSE)
+
+# Extract the unique medications
+result = reportFinal
+
+# Threshold results at FDR q value:
+threshold = .05
+result = result[which(result$FDR.q.val <= .05),]
+tmp = as.character(result$NAME)
+tmp= sapply(tmp,strsplit,"_")
+
+# Now find medications
+medications = c()
+for (t in tmp){
+  medications = c(medications,t[[1]][1])
+}
+
+result = cbind(medications,result)
+colnames(result)[2] = "FOLDER"
+colnames(result)[3] = "GENESET"
+meds = sort(unique(medications))
+# Next, let's download the genes for each of our core results
+# This will be the same order as the medications "meds"
+geneLists = list()
+
+# This is the top directory for the results
+topdir = "/scratch/PI/dpwall/DATA/DRUG/CONNECTIVITY_MAP/gseaRMA/"
+library(gdata)
+
+for (m in meds) {
+   tmplist = c()
+   # Filter data to that medication
+   subset = result[which(result$medications==as.character(m)),]
+   # Now for each significant term, get the genes!
+   for (s in subset$FOLDER){
+     folder = as.character(s)
+     tmp = subset[which(subset$FOLDER %in% folder),]
+     geneset = as.character(tmp$GENESET)
+     for (g in geneset){
+       filepath = paste(topdir,folder,"/",g,sep="")
+       filepath = list.files(topdir,pattern=paste(g,"*.xls",sep=""))
+       if (file.exists(filepath)){
+         filey = read.csv(file=filepath,sep="\t",head=TRUE)
+         tmplist = c(tmplist,as.character(filey$PROBE[which(filey$CORE.ENRICHMENT == "Yes")])) 
+       } else {
+        cat(filepath,"does not exist\n")
+       }
+     }
+   }
+}
 
 # Now let's explore these results!!
-result = read.table(file=paste(writedir,"DRUGS_GSEA_FDRpt05.txt",sep=""),head=TRUE)
-subset = reportFinal[which(reportFinal$NAME == unique(reportFinal$NAME)[18]),]
+#result = read.table(file=paste(writedir,"DRUGS_GSEA_FDRpt05_RMA_Filter.txt",sep=""),head=TRUE)
+#subset = reportFinal[which(reportFinal$NAME == unique(reportFinal$NAME)[18]),]
+
+load('DRUGS_GSEA_FDRpt05_RMA_Filter.Rda')
+result = reportFinal
 
 # First let's create a matrix of medications (rows), and gene sets (columns), and
 # we want to see if we can cluster.
 geneset = unique(sort(result$NAME.1))
-tmp = as.character(result$NAME)
-tmp= sapply(tmp,strsplit,"_")
-
-medications = c()
-for (t in tmp){
-  medications = c(medications,t[[1]][1])
-}  
 
 result = result[,-c(4,5,14)]
 result = cbind(medications,result)
 colnames(result)[2] = "FOLDER"
 colnames(result)[3] = "GENESET"
-save(result,file=paste(writedir,"DRUGS_GSEA_FDRpt05.Rda",sep=""))
+save(result,file=paste("DRUGS_GSEA_FDRpt05_RMA_Filter_Final.Rda",sep=""))
 
 load(paste(writedir,"DRUGS_GSEA_FDRpt05.Rda",sep=""))
 # Matrix - drugs in rows, gene sets in columns
+
+geneset = as.character(unique(result$GENESET))
+
 df = array(data=0,dim=c(length(unique(result$medications)),length(geneset)))
 rownames(df) = as.character(sort(unique(result$medications)))
 colnames(df) = as.character(geneset)
@@ -69,15 +117,15 @@ library(RCurl)
 library(XML)
 
 # We will save a final list of medications
-actions = array(dim=72)   # list of actions
-foundmeds = array(dim=72) # list of meds we found
+actions = array(dim=74)   # list of actions
+foundmeds = array(dim=74) # list of meds we found
 missmeds = c()  # missing medications
 
 medications = unique(medications)
 
 # Now we need to look up medication names in RxNorm:
 idx=1
-for (i in 88:length(medications)){
+for (i in 1:length(medications)){
   m = medications[i]
   med = tolower(as.character(m))
   xml = getURL(paste('http://rxnav.nlm.nih.gov/REST/approximateTerm?term=',med,"&maxEntries=20&option=1",sep=""))
@@ -85,13 +133,17 @@ for (i in 88:length(medications)){
   xml = xmlToList(xml)
   if (length(xml$approximateGroup$candidate$rxcui) == 0){
     missmeds = c(missmeds,med)
-  } else{ # Look up actions with cuid
+  } else { # Look up actions with cuid
     cuid = xml$approximateGroup$candidate$rxcui
     xml = getURL(paste('http://rxnav.nlm.nih.gov/REST/rxcui/',cuid,"/hierarchy?src=MESH&oneLevel=1",sep=""))
     xml = xmlParse(xml)
     xml = xmlToList(xml)
     if (xml[[1]]$title != "***  No MeSH identifier found ***"){
-      actions[idx] = xml[[1]][3]$node$nodeName
+      if (!is.null(xml[[1]][3]$node$nodeName)) {
+        actions[idx] = xml[[1]][3]$node$nodeName
+      } else {
+        actions[idx] = "NA" 
+      }
     }
     foundmeds[idx] = med
     idx = idx+1
@@ -105,6 +157,12 @@ medtable = data.frame(actions=medlookup,medication=allmeds)
 save(medtable,file=paste(writedir,"DRUGS_GSEA_FDRpt05_mediction.Rda",sep=""))
 load(paste(writedir,"DRUGS_GSEA_FDRpt05_medaction.Rda",sep=""))
 # we find 72 of the set! Look up others manually
+
+# IDEA - find drugs with common gene sets - calculate correlation between
+# enrichment scores, GEPHI to visualize similarity
+
+# Look at larger sets
+subset = reportFinal[which(reportFinal$SIZE>50),]
 
 # Look up drug names
 labels = c()
