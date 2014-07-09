@@ -1,17 +1,27 @@
+# This script will generate a BRITE Hierarchy with the KEGG API for a particular gene set
+
 library(RCurl)
 
 # import the gene symbol list - should be a csv file with the following columns
 # DISORDER   TERM         RESULT    GENE      METRIC    SCORE       RUNNING.ES CORE
 # AD         AUTOMATIC_UP GSE12685  UBOX5     95        0.16748269  0.1515688  Yes
-listID_genes_info = read.csv("/home/vanessa/Documents/Work/GENE_EXPRESSION/neurosynth/results/sigresults/AllGenesNoFilter.csv", header=T) 
+# listID_genes_info = read.csv("/home/vanessa/Documents/Work/GENE_EXPRESSION/neurosynth/results/sigresults/AllGenesNoFilter.csv", header=T) 
+load('/home/vanessa/Documents/Work/GENE_EXPRESSION/cmap/gsea/DrugGeneLists74.Rda')
+data = result
 
 # For each term
-terms = as.character(unique(listID_genes_info$TERM))
-for (t in terms){
+#terms = as.character(unique(listID_genes_info$TERM))
 
+# For each medication
+terms = data$meds
+
+for (tt in terms){
+
+  t = terms[tt]
   # Get the unique genes
-  genes = listID_genes_info[which(listID_genes_info$TERM %in% t),]
-  genes = as.character(sort(unique(genes$GENE)))
+  #genes = listID_genes_info[which(listID_genes_info$TERM %in% t),]
+  #genes = as.character(sort(unique(genes$GENE)))
+  genes = strsplit(as.character(data$geneLists[[tt]])," ")[[1]]
 
   # For each gene, look up the hsa identifiers
   hsa = c()
@@ -100,8 +110,9 @@ for (t in terms){
         while(letter != "A") {
           # Get rid of the letter we already found
           nix = grep(paste(letter,"[[:blank:]]",sep="+"), tmp)
-          tmp = tmp[-nix]
-    
+          if (length(nix) > 0) {
+            tmp = tmp[-nix]
+          }
           # The top is our next letter
           midx = 1
           mat = tmp[midx]  

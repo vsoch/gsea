@@ -2,7 +2,7 @@
 outdir = "/scratch/PI/dpwall/DATA/DRUG/CONNECTIVITY_MAP/gseaRMA"
 folders = list.files(outdir)
 #folders = folders[-which(folders == "ERROR")]
-folders = folders[-which(folders=="nocodazole_HGU133A.Gsea.1402258840744")]
+#folders = folders[-which(folders=="nocodazole_HGU133A.Gsea.1402258840744")]
 
 # Threshold results at FDR q value:
 threshold = .05
@@ -52,30 +52,41 @@ geneLists = list()
 
 # This is the top directory for the results
 topdir = "/scratch/PI/dpwall/DATA/DRUG/CONNECTIVITY_MAP/gseaRMA/"
-library(gdata)
+outfile = paste(writedir,"drugGeneLists.txt",sep="")
 
-for (m in meds) {
+for (mm in 1:length(meds)) {
+   cat("Processing",mm,"of",length(meds),"\n")
+   m = meds[mm]
    tmplist = c()
    # Filter data to that medication
    subset = result[which(result$medications==as.character(m)),]
    # Now for each significant term, get the genes!
-   for (s in subset$FOLDER){
+   for (ss in 1:length(subset$FOLDER)){
+     cat("  folder",ss,"of",length(subset$FOLDER),"\n")
+     s = subset$FOLDER[ss]
      folder = as.character(s)
      tmp = subset[which(subset$FOLDER %in% folder),]
      geneset = as.character(tmp$GENESET)
      for (g in geneset){
-       filepath = paste(topdir,folder,"/",g,sep="")
-       filepath = list.files(topdir,pattern=paste(g,"*.xls",sep=""))
+       filepath = paste(topdir,folder,sep="")
+       filepath = paste(filepath,"/",list.files(filepath,pattern=paste("^",g,"*.xls",sep="")),sep="")
        if (file.exists(filepath)){
-         filey = read.csv(file=filepath,sep="\t",head=TRUE)
-         tmplist = c(tmplist,as.character(filey$PROBE[which(filey$CORE.ENRICHMENT == "Yes")])) 
+         filey = read.csv(filepath,sep="\t",head=TRUE)
+         tmplist = unique(c(tmplist,as.character(filey$PROBE[which(filey$CORE.ENRICHMENT == "Yes")]))) 
        } else {
         cat(filepath,"does not exist\n")
        }
      }
    }
+   tmplist = unique(tmplist)
+   # Write to output file
+   tmplist = paste(sort(tmplist),collapse=" ")
+   cat(m,"\t",tmplist,"\n",file=outfile,append=TRUE)
+   geneLists = c(geneLists,list(tmplist))
 }
 
+result = list(geneLists=geneLists,meds=meds,report=reportFinal)
+save(result,file="DrugGeneLists74.Rda")
 # Now let's explore these results!!
 #result = read.table(file=paste(writedir,"DRUGS_GSEA_FDRpt05_RMA_Filter.txt",sep=""),head=TRUE)
 #subset = reportFinal[which(reportFinal$NAME == unique(reportFinal$NAME)[18]),]

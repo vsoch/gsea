@@ -1,17 +1,17 @@
 # run_gsea.R will read in parameters from an input file "inputParams.txt," create
 # submission scripts to run the java version of GSEA on sherlock, and submit them.
 # USAGE RSCRIPT gsea.R gseadir inputprefix inputdata inputchip inputcls inputdb outdir
+disorder = c("BRA")
 
 gseadir = "/share/PI/dpwall/SOFTWARE/GSEA-P-R/gsea2-2.0.14.jar"                  # Path to main GSEA program
-inputfile = "/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/BPD/inputParam.txt"    # Path to input parameter file
-inputdb = c("/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/GENE_DATABASE/maude.gmt","/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/GENE_DATABASE/brainTerms.gmt")
-outdirtop = "/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/BPD/gsea"             # Top level output directory - subdirectories will be made inside
+inputfile = paste("/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/",disorder,"/inputParam.txt",sep="")    # Path to input parameter file
+inputdb = c("/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/GENE_DATABASE/brainTerms.gmt")
+outdirtop = paste("/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/",disorder,"/gsea",sep="")            # Top level output directory - subdirectories will be made inside
 setwd('/scratch/PI/dpwall/SCRIPT/R/gsea')
 
 # Read in input parameter file - create job script and submit for each entry
 inputfile = read.csv(inputfile,sep="\t",head=TRUE)
 for (i in 1:dim(inputfile)[1]){
-  for (i in c(2)) {
   normdata = as.character(inputfile$NORMDATA[i])
   inputchip = inputfile$CHIP[i]
   inputcls = inputfile$CLASS[i]
@@ -28,7 +28,7 @@ for (i in 1:dim(inputfile)[1]){
     #outdir = paste(outdirtop,"/",folder,"/",sep="")
     #dir.create(outdir, showWarnings = FALSE)
     
-    jobby = paste(folder,".job",sep="")
+    jobby = paste(folder,"96.job",sep="")
     sink(file=paste(".job/",jobby,sep=""))
     cat("#!/bin/bash\n")
     cat("#SBATCH --job-name=",jobby,"\n",sep="")  

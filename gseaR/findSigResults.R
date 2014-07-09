@@ -1,5 +1,5 @@
 # Get list of files in the output directory
-disorder = "BPD"
+disorder = "LYME"
 outdir = paste("/scratch/PI/dpwall/DATA/GENE_EXPRESSION/gsea/",disorder,"/gsea",sep="")
 folders = list.files(outdir)
 # Threshold results at FDR q value:
@@ -11,7 +11,7 @@ reportFinal = c()
 for (f in folders){
   reportdir = paste(outdir,"/",f,"/",sep="")
   visual = cat(list.files(reportdir,pattern="gsea_report_for"),sep="\n")
-  report = list.files(reportdir,pattern="gsea_report_for_SZO")
+  report = list.files(reportdir,pattern=paste("gsea_report_for_MENIN",sep=""))
   if (length(report)!=0){
     idx = grep("*.xls",report)
     report = report[idx]
@@ -22,6 +22,7 @@ for (f in folders){
    }
 }
 colnames(reportFinal)[1] = "NAME"
+sort(reportFinal$FDR.q.val,decreasing=TRUE)
 
 # Save to report folder
 dir.create(writedir, showWarnings = FALSE)
